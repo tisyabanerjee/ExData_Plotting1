@@ -5,10 +5,11 @@ names(power) <- c("Date", "Time", "Global_active_power", "Global_reactive_power"
 #Subseting data based on date
 subpower <- subset(power, power$Date == "1/2/2007" | power$Date == "2/2/2007")
 #converting date to day
-newdate <- strptime(paste(subpower$Date, subpower$Time, sep = " "), "%d%m%Y %H:%M:%S")
-Global_active_power <- as.numeric(as.character(subpower$Global_active_power))
-#opening png device window
+subpower$Date <- as.Date(subpower$Date, format="%d/%m/%Y")
+subpower$Time <- strptime(subpower$Time, format="%H:%M:%S")
+subpower[1:1440,"Time"] <- format(subpower[1:1440,"Time"],"2007-02-01 %H:%M:%S")
+subpower[1441:2880,"Time"] <- format(subpower[1441:2880,"Time"],"2007-02-02 %H:%M:%S")
 png("plot2.png", width = 480, height = 480)
-plot(newdate, Global_active_power, type = 1, ylab = "Global Active Power (kilowatts)")
+plot(subpower$Time,as.numeric(as.character(subpower$Global_active_power)),type="l",xlab="",ylab="Global Active Power (kilowatts)") 
 #closing device window
 dev.off()
